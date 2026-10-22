@@ -13,7 +13,6 @@ permissions:
 
 jobs:
   build:
-    name: Build debug APK
     runs-on: ubuntu-24.04
     timeout-minutes: 30
 
@@ -29,12 +28,12 @@ jobs:
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
-        with:
-          cmdline-tools-version: "11076708"
-          packages: "platform-tools,platforms;android-35,build-tools;35.0.0"
 
-      - name: Accept Android SDK licenses
-        run: yes | sdkmanager --licenses
+      - name: Install Android SDK packages
+        run: |
+          sdkmanager --sdk_root="$ANDROID_HOME" "platform-tools"
+          sdkmanager --sdk_root="$ANDROID_HOME" "platforms;android-35"
+          sdkmanager --sdk_root="$ANDROID_HOME" "build-tools;35.0.0"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -50,5 +49,4 @@ jobs:
           name: MyFitnessTracker-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
-          retention-days: 7
           
